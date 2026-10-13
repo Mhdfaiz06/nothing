@@ -1,0 +1,36 @@
+/*Mohammed Faiz
+S7 CSB 23
+Exp 4
+Vowels and Consonants*/
+%{
+#include <stdio.h>
+
+int vowels = 0, consonants = 0;
+%}
+
+%%
+
+[AEIOUaeiou]    { vowels++; }
+[B-DF-HJ-NP-TV-Zb-df-hj-np-tv-z] {
+                    consonants++;
+                }
+\n              { return 0; }
+.               ;
+
+%%
+
+int yywrap()
+{
+    return 1;
+}
+
+int main()
+{
+    printf("Enter a string:\n");
+    yylex();
+
+    printf("\nTotal Vowels : %d\n", vowels);
+    printf("Total Consonants : %d\n", consonants);
+
+    return 0;
+}
