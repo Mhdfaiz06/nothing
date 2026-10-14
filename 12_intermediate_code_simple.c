@@ -12,7 +12,7 @@ int main()
     printf("Enter expression (a=b+c*d): ");
     scanf(" %c=%c%c%c%c%c", &lhs, &a, &op1, &b, &op2, &c);
 
-    if (op2 == '*' || op2 == '/')
+    if ((op2 == '*' || op2 == '/') && (op1 == '+' || op1 == '-'))
     {
         printf("t%d = %c %c %c\n", count, b, op2, c);
         temp = '0' + count;
@@ -39,6 +39,7 @@ gcc <file_name>.c -o <file_name>
 Sample input:
 a=b+c*d
 (must be exactly this form: x=y op z op w, single letters)
+(also try: a=b/c*d  ->  t1 = b / c, t2 = t1 * d, a = t2)
 
 Expected output:
 t1 = c * d
