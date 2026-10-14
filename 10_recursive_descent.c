@@ -100,4 +100,12 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+i+i*i      (try also: (i+i)*i  and  i+*i)
+
+Expected output:
+i+i*i    -> Valid Expression
+(i+i)*i  -> Valid Expression
+i+*i     -> Invalid Expression
 */

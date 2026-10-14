@@ -169,4 +169,28 @@ int main() {
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+Enter number of NFA states: 3
+Enter number of input symbols: 2
+Enter number of NFA transitions: 4
+(from_state symbol to_state)
+0 0 0
+0 0 1
+0 1 0
+1 0 2
+Enter start state: 0
+
+Expected output:
+DFA State   Symbol 0   Symbol 1
+{q0}        D1         D0
+{q0,q1}     D2         D0
+{q0,q1,q2}  D2         D0
+
+DFA states:
+D0 = {q0}
+D1 = {q0,q1}
+D2 = {q0,q1,q2}
+
+DFA start state: D0
 */

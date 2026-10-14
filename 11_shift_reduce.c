@@ -121,4 +121,23 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+i+i*i
+
+Expected output:
+Stack      Input      Action
+i          +i*i       Shift
+E          +i*i       Reduce E->i
+E+         i*i        Shift
+E+i        *i         Shift
+E+E        *i         Reduce E->i
+E+E*       i          Shift
+E+E*i                 Shift
+E+E*E                 Reduce E->i
+E+E                   Reduce E->E*E
+E                     Reduce E->E+E
+
+Accepted
+(a blank row is printed between each step)
 */

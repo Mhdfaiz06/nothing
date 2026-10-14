@@ -39,4 +39,14 @@ Commands to run:
 flex <file_name>.l
 gcc lex.yy.c -o <file_name> -ll
 ./<file_name>
+
+Sample input:
+hi there
+ok
+(then press Ctrl+D)
+
+Expected output:
+Number of Lines : 2
+Number of Words : 3
+Number of Characters : 12
 */

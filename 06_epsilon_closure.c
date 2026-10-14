@@ -67,4 +67,19 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+Enter number of states: 4
+Enter number of epsilon transitions: 3
+Enter epsilon transitions (from to):
+0 1
+1 2
+3 1
+
+Expected output:
+Epsilon Closures:
+ε-Closure(q0) = { q0 q1 q2 }
+ε-Closure(q1) = { q1 q2 }
+ε-Closure(q2) = { q2 }
+ε-Closure(q3) = { q3 q1 q2 }
 */

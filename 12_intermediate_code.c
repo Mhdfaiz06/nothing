@@ -100,4 +100,14 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+a+b*c-d/e
+
+Expected output:
+t2 = b * c
+t1 = a + t2
+t2 = d / e
+t1 = t1 - t2
+Result = t1
 */

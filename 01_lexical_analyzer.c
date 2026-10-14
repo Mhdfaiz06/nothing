@@ -134,7 +134,32 @@ int main()
 
 /*
 Commands to run:
-(create input.c with the code to analyze in the same folder)
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+input.c (create this file in the same folder):
+int sum = a + 10;
+// comment
+if (sum > 5) return sum;
+
+Expected output:
+Tokens:
+
+int : Keyword
+sum : Identifier
+= : Operator
+a : Identifier
++ : Operator
+10 : Number
+; : Special Symbol
+if : Keyword
+( : Special Symbol
+sum : Identifier
+> : Operator
+5 : Number
+) : Special Symbol
+return : Keyword
+sum : Identifier
+; : Special Symbol
 */

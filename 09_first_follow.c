@@ -217,4 +217,32 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+Enter number of productions: 8
+E=TR
+R=+TR
+R=#
+T=FY
+Y=*FY
+Y=#
+F=(E)
+F=i
+(# means epsilon)
+
+Expected output:
+FIRST sets:
+FIRST(E) = { ( i }
+FIRST(R) = { + # }
+FIRST(T) = { ( i }
+FIRST(Y) = { * # }
+FIRST(F) = { ( i }
+
+FOLLOW sets:
+FOLLOW(E) = { $ ) }
+FOLLOW(R) = { $ ) }
+FOLLOW(T) = { + $ ) }
+FOLLOW(Y) = { + $ ) }
+FOLLOW(F) = { * + $ ) }
+(a non-terminal with 2 productions is printed twice)
 */

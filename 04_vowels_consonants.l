@@ -40,4 +40,12 @@ Commands to run:
 flex <file_name>.l
 gcc lex.yy.c -o <file_name> -ll
 ./<file_name>
+
+Sample input:
+Hello World
+(press Enter)
+
+Expected output:
+Total Vowels : 3
+Total Consonants : 7
 */

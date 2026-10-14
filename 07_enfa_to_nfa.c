@@ -172,4 +172,37 @@ int main()
 Commands to run:
 gcc <file_name>.c -o <file_name>
 ./<file_name>
+
+Sample input:
+Enter number of states: 3
+Enter number of input symbols: 3
+Enter number of epsilon transitions: 2
+0 1
+1 2
+Symbol 0 -> number of transitions: 1
+0 0
+Symbol 1 -> number of transitions: 1
+1 1
+Symbol 2 -> number of transitions: 1
+2 2
+
+Expected output:
+Epsilon Closures:
+E-Closure(q0) = { q0 q1 q2 }
+E-Closure(q1) = { q1 q2 }
+E-Closure(q2) = { q2 }
+
+NFA without epsilon transitions:
+For input symbol 0:
+q0 -> { q0 q1 q2 }
+q1 -> { }
+q2 -> { }
+For input symbol 1:
+q0 -> { q1 q2 }
+q1 -> { q1 q2 }
+q2 -> { }
+For input symbol 2:
+q0 -> { q2 }
+q1 -> { q2 }
+q2 -> { q2 }
 */
