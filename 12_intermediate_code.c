@@ -95,3 +95,9 @@ int main()
     printf("Result = %s\n", operand[0]);
     return 0;
 }
+
+/*
+Commands to run:
+gcc <file_name>.c -o <file_name>
+./<file_name>
+*/

@@ -54,3 +54,10 @@ int yywrap()
 {
     return 1;
 }
+
+/*
+Commands to run:
+flex <file_name>.l
+gcc lex.yy.c -o <file_name> -ll
+./<file_name>
+*/

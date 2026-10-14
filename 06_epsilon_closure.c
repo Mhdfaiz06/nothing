@@ -62,3 +62,9 @@ int main()
 
     return 0;
 }
+
+/*
+Commands to run:
+gcc <file_name>.c -o <file_name>
+./<file_name>
+*/

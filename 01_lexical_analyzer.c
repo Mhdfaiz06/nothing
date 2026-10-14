@@ -131,3 +131,10 @@ int main()
 
     return 0;
 }
+
+/*
+Commands to run:
+(create input.c with the code to analyze in the same folder)
+gcc <file_name>.c -o <file_name>
+./<file_name>
+*/

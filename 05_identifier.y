@@ -33,3 +33,11 @@ int main()
     yyparse();
     return 0;
 }
+
+/*
+Commands to run:
+yacc -d <file_name>.y
+flex <file_name>.l
+gcc y.tab.c lex.yy.c -o <file_name> -ll
+./<file_name>
+*/
