@@ -1,208 +1,70 @@
-/*Mohammed Faiz
-S7 CSB 23
-Exp 7
-Epsilon to NFA transition*/
 #include <stdio.h>
-#define MAX 20
 
-int n, symbols;
-int epsilon[MAX][MAX];
-int trans[MAX][MAX][MAX];
-int closure[MAX][MAX];
+int n, sym, e[10][10], c[10][10], t[10][10][10];
 
-/* Find epsilon closure of a state */
-void findClosure(int state, int start)
+void closure(int s, int q)
 {
     int i;
-
-    if (closure[start][state])
-        return;
-
-    closure[start][state] = 1;
-
+    if (c[s][q]) return;
+    c[s][q] = 1;
     for (i = 0; i < n; i++)
-    {
-        if (epsilon[state][i])
-            findClosure(i, start);
-    }
-}
-
-/* Calculate epsilon closure for all states */
-void calculateClosures()
-{
-    int i;
-
-    for (i = 0; i < n; i++)
-        findClosure(i, i);
+        if (e[q][i])
+            closure(s, i);
 }
 
 int main()
 {
-    int i, j, k, s;
-    int m, from, to;
+    int i, j, k, p, q, s, m, a, b;
+    char ch;
 
     printf("Enter number of states: ");
     scanf("%d", &n);
+    printf("Enter number of input symbols (excluding epsilon): ");
+    scanf("%d", &sym);
 
-    printf("Enter number of input symbols: ");
-    scanf("%d", &symbols);
-
-    /* Initialize */
     for (i = 0; i < n; i++)
-    {
-        for (j = 0; j < n; j++)
-        {
-            epsilon[i][j] = 0;
-            closure[i][j] = 0;
-
-            for (s = 0; s < symbols; s++)
-                trans[s][i][j] = 0;
+        for (j = 0; j < n; j++) {
+            e[i][j] = c[i][j] = 0;
+            for (s = 0; s < sym; s++)
+                t[i][s][j] = 0;
         }
-    }
 
-    /* Read epsilon transitions */
-    printf("Enter number of epsilon transitions: ");
+    printf("Enter number of transitions: ");
     scanf("%d", &m);
-
-    printf("Enter epsilon transitions (from to):\n");
-
-    for (i = 0; i < m; i++)
-    {
-        scanf("%d %d", &from, &to);
-        epsilon[from][to] = 1;
+    printf("Enter transitions (from symbol to, use e for epsilon, 0/1/.. for symbols):\n");
+    for (i = 0; i < m; i++) {
+        scanf("%d %c %d", &a, &ch, &b);
+        if (ch == 'e')
+            e[a][b] = 1;
+        else
+            t[a][ch - '0'][b] = 1;
     }
 
-    /* Calculate epsilon closures */
-    calculateClosures();
-
-    printf("\nEpsilon Closures:\n");
-
+    /* Compute epsilon-closure for all states */
     for (i = 0; i < n; i++)
-    {
-        printf("E-Closure(q%d) = { ", i);
+        closure(i, i);
 
-        for (j = 0; j < n; j++)
-        {
-            if (closure[i][j])
-                printf("q%d ", j);
-        }
+    /* 3-Step NFA Transition: e* -> symbol -> e* */
+    printf("\nNFA Transitions:\n");
+    for (i = 0; i < n; i++) {
+        for (s = 0; s < sym; s++) {
+            int res[10] = {0};
 
-        printf("}\n");
-    }
+            for (k = 0; k < n; k++)
+                if (c[i][k])                     /* Step 1: e* from i to k */
+                    for (p = 0; p < n; p++)
+                        if (t[k][s][p])          /* Step 2: symbol s from k to p */
+                            for (q = 0; q < n; q++)
+                                if (c[p][q])     /* Step 3: e* from p to q */
+                                    res[q] = 1;
 
-    /* Read transitions for each input symbol */
-    for (s = 0; s < symbols; s++)
-    {
-        printf("\nEnter transitions for input "
-               "symbol %d.\n", s);
-
-        printf("Enter number of transitions: ");
-        scanf("%d", &m);
-
-        printf("Enter transitions (from to):\n");
-
-        for (i = 0; i < m; i++)
-        {
-            scanf("%d %d", &from, &to);
-            trans[s][from][to] = 1;
-        }
-    }
-
-    /* Convert epsilon-NFA to NFA */
-    printf("\nNFA without epsilon transitions:\n");
-
-    for (s = 0; s < symbols; s++)
-    {
-        printf("\nFor input symbol %d:\n", s);
-
-        for (i = 0; i < n; i++)
-        {
-            int result[MAX] = {0};
-
-            /*
-             * Step 1:
-             * Find epsilon closure of current state.
-             */
-            for (j = 0; j < n; j++)
-            {
-                if (closure[i][j])
-                {
-                    /*
-                     * Step 2:
-                     * Follow input symbol from
-                     * every state in the closure.
-                     */
-                    for (k = 0; k < n; k++)
-                    {
-                        if (trans[s][j][k])
-                        {
-                            /*
-                             * Step 3:
-                             * Add epsilon closure
-                             * of destination.
-                             */
-                            int p;
-
-                            for (p = 0; p < n; p++)
-                            {
-                                if (closure[k][p])
-                                    result[p] = 1;
-                            }
-                        }
-                    }
-                }
-            }
-
-            printf("q%d -> { ", i);
-
-            for (j = 0; j < n; j++)
-            {
-                if (result[j])
-                    printf("q%d ", j);
-            }
-
+            printf("d(%d, %d) = { ", i, s);
+            for (q = 0; q < n; q++)
+                if (res[q])
+                    printf("%d ", q);
             printf("}\n");
         }
     }
 
     return 0;
 }
-
-/*
-Commands to run:
-gcc <file_name>.c -o <file_name>
-./<file_name>
-
-Sample input:
-Enter number of states: 3
-Enter number of input symbols: 3
-Enter number of epsilon transitions: 2
-0 1
-1 2
-Symbol 0 -> number of transitions: 1
-0 0
-Symbol 1 -> number of transitions: 1
-1 1
-Symbol 2 -> number of transitions: 1
-2 2
-
-Expected output:
-Epsilon Closures:
-E-Closure(q0) = { q0 q1 q2 }
-E-Closure(q1) = { q1 q2 }
-E-Closure(q2) = { q2 }
-
-NFA without epsilon transitions:
-For input symbol 0:
-q0 -> { q0 q1 q2 }
-q1 -> { }
-q2 -> { }
-For input symbol 1:
-q0 -> { q1 q2 }
-q1 -> { q1 q2 }
-q2 -> { }
-For input symbol 2:
-q0 -> { q2 }
-q1 -> { q2 }
-q2 -> { q2 }
-*/
