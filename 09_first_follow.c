@@ -1,22 +1,13 @@
-/*Mohammed Faiz
-S7 CSB 23
-Exp 9
-FIRST AND FOLLOW*/
 #include <stdio.h>
-#include <string.h>
 #include <ctype.h>
 #define MAX 20
 
-char production[MAX][MAX];
-char first[MAX][MAX], follow[MAX][MAX];
+char prod[MAX][MAX];
 int n;
 
-/* Add a character to a set if it is not
-   already present */
 void add(char set[], char c)
 {
     int i;
-
     for (i = 0; set[i] != '\0'; i++)
         if (set[i] == c)
             return;
@@ -25,130 +16,72 @@ void add(char set[], char c)
     set[i + 1] = '\0';
 }
 
-/* Find FIRST of a symbol */
-void findFirst(char c, char result[])
+void findFirst(char c, char res[])
 {
-    int i, j;
+    int i, j, k;
     char temp[MAX];
 
-    /* Terminal */
-    if (!isupper(c))
-    {
-        add(result, c);
+    if (!isupper(c)) {
+        add(res, c);
         return;
     }
 
-    /* Non-terminal */
-    for (i = 0; i < n; i++)
-    {
-        if (production[i][0] == c)
-        {
-            /* A -> # means epsilon */
-            if (production[i][2] == '#')
-            {
-                add(result, '#');
-            }
-            else
-            {
-                for (j = 2; production[i][j] != '\0';
-                     j++)
-                {
+    for (i = 0; i < n; i++) {
+        if (prod[i][0] == c) {
+            if (prod[i][2] == '#') {
+                add(res, '#');
+            } else {
+                for (j = 2; prod[i][j] != '\0'; j++) {
                     temp[0] = '\0';
-                    findFirst(production[i][j], temp);
+                    findFirst(prod[i][j], temp);
 
-                    int k;
-                    for (k = 0; temp[k] != '\0'; k++)
-                    {
-                        if (temp[k] != '#')
-                            add(result, temp[k]);
-                    }
-
-                    /* If epsilon is not present,
-                       stop */
-                    int hasEpsilon = 0;
-                    for (k = 0; temp[k] != '\0'; k++)
-                    {
+                    int hasEps = 0;
+                    for (k = 0; temp[k] != '\0'; k++) {
                         if (temp[k] == '#')
-                            hasEpsilon = 1;
+                            hasEps = 1;
+                        else
+                            add(res, temp[k]);
                     }
 
-                    if (!hasEpsilon)
+                    if (!hasEps)
                         break;
 
-                    /* If all symbols can produce
-                       epsilon */
-                    if (production[i][j + 1] == '\0')
-                        add(result, '#');
+                    if (prod[i][j + 1] == '\0')
+                        add(res, '#');
                 }
             }
         }
     }
 }
 
-/* Find FOLLOW sets */
-void findFollow(char c)
+void findFollow(char c, char res[])
 {
     int i, j, k;
     char temp[MAX];
 
-    /* Start symbol gets $ */
-    if (c == production[0][0])
-        add(follow[c - 'A'], '$');
+    if (c == prod[0][0])
+        add(res, '$');
 
-    for (i = 0; i < n; i++)
-    {
-        for (j = 2; production[i][j] != '\0'; j++)
-        {
-            if (production[i][j] == c)
-            {
-                /* If symbol is at the end */
-                if (production[i][j + 1] == '\0')
-                {
-                    if (production[i][0] != c)
-                    {
-                        findFollow(production[i][0]);
-
-                        for (k = 0;
-                             follow[production[i][0]
-                                    - 'A'][k] != '\0';
-                             k++)
-                            add(follow[c - 'A'],
-                                follow[production[i][0]
-                                       - 'A'][k]);
-                    }
-                }
-                else
-                {
+    for (i = 0; i < n; i++) {
+        for (j = 2; prod[i][j] != '\0'; j++) {
+            if (prod[i][j] == c) {
+                if (prod[i][j + 1] == '\0') {
+                    if (prod[i][0] != c)
+                        findFollow(prod[i][0], res);
+                } else {
                     temp[0] = '\0';
-                    findFirst(production[i][j + 1],
-                              temp);
+                    findFirst(prod[i][j + 1], temp);
 
-                    int hasEpsilon = 0;
-
-                    for (k = 0; temp[k] != '\0'; k++)
-                    {
+                    int hasEps = 0;
+                    for (k = 0; temp[k] != '\0'; k++) {
                         if (temp[k] == '#')
-                            hasEpsilon = 1;
+                            hasEps = 1;
                         else
-                            add(follow[c - 'A'],
-                                temp[k]);
+                            add(res, temp[k]);
                     }
 
-                    /* If next symbol produces
-                       epsilon */
-                    if (hasEpsilon &&
-                        production[i][0] != c)
-                    {
-                        findFollow(production[i][0]);
-
-                        for (k = 0;
-                             follow[production[i][0]
-                                    - 'A'][k] != '\0';
-                             k++)
-                            add(follow[c - 'A'],
-                                follow[production[i][0]
-                                       - 'A'][k]);
-                    }
+                    if (hasEps && prod[i][0] != c)
+                        findFollow(prod[i][0], res);
                 }
             }
         }
@@ -157,92 +90,35 @@ void findFollow(char c)
 
 int main()
 {
-    int i;
-    char result[MAX];
+    int i, j;
+    char res[MAX];
 
     printf("Enter number of productions: ");
     scanf("%d", &n);
 
-    printf("\nEnter productions:\n");
-    printf("Example: E=TR\n");
-    printf("Use # for epsilon.\n\n");
-
+    printf("Enter productions (e.g. E=TR, # for epsilon):\n");
     for (i = 0; i < n; i++)
-        scanf("%s", production[i]);
+        scanf("%s", prod[i]);
 
-    /* FIRST */
     printf("\nFIRST sets:\n");
-
-    for (i = 0; i < n; i++)
-    {
-        char c = production[i][0];
-
-        result[0] = '\0';
-        findFirst(c, result);
-
-        printf("FIRST(%c) = { ", c);
-
-        int j;
-        for (j = 0; result[j] != '\0'; j++)
-            printf("%c ", result[j]);
-
+    for (i = 0; i < n; i++) {
+        res[0] = '\0';
+        findFirst(prod[i][0], res);
+        printf("FIRST(%c) = { ", prod[i][0]);
+        for (j = 0; res[j] != '\0'; j++)
+            printf("%c ", res[j]);
         printf("}\n");
     }
 
-    /* FOLLOW */
-    for (i = 0; i < n; i++)
-    {
-        char c = production[i][0];
-        findFollow(c);
-    }
-
     printf("\nFOLLOW sets:\n");
-
-    for (i = 0; i < n; i++)
-    {
-        char c = production[i][0];
-        printf("FOLLOW(%c) = { ", c);
-
-        int j;
-        for (j = 0; follow[c - 'A'][j] != '\0'; j++)
-            printf("%c ", follow[c - 'A'][j]);
-
+    for (i = 0; i < n; i++) {
+        res[0] = '\0';
+        findFollow(prod[i][0], res);
+        printf("FOLLOW(%c) = { ", prod[i][0]);
+        for (j = 0; res[j] != '\0'; j++)
+            printf("%c ", res[j]);
         printf("}\n");
     }
 
     return 0;
 }
-
-/*
-Commands to run:
-gcc <file_name>.c -o <file_name>
-./<file_name>
-
-Sample input:
-Enter number of productions: 8
-E=TR
-R=+TR
-R=#
-T=FY
-Y=*FY
-Y=#
-F=(E)
-F=i
-(# means epsilon)
-
-Expected output:
-FIRST sets:
-FIRST(E) = { ( i }
-FIRST(R) = { + # }
-FIRST(T) = { ( i }
-FIRST(Y) = { * # }
-FIRST(F) = { ( i }
-
-FOLLOW sets:
-FOLLOW(E) = { $ ) }
-FOLLOW(R) = { $ ) }
-FOLLOW(T) = { + $ ) }
-FOLLOW(Y) = { + $ ) }
-FOLLOW(F) = { * + $ ) }
-(a non-terminal with 2 productions is printed twice)
-*/
